@@ -86,6 +86,20 @@ def has_dependence(source, sink, L, U, loop_var):
         else:
             # Negative distance indicates infeasible dependence
             return False
+    elif is_integer(source) and is_integer(sink):
+        return int(source) == int(sink)
+    elif is_integer(source) and is_unit_stride_of(sink, loop_var):
+        sink_offset = get_const_offset(sink, loop_var)
+        sink_index = int(source) - sink_offset
+        # `int(L) <= sink_index < int(U)` ensures that sink_index is within loop bounds
+        # `sink_index > int(L)` ensures that there exists at least one source index less than the sink index
+        return int(L) <= sink_index < int(U) and sink_index > int(L) 
+    elif is_unit_stride_of(source, loop_var) and is_integer(sink):
+        source_offset = get_const_offset(source, loop_var)
+        source_index = int(sink) - source_offset
+        # `int(L) <= source_index < int(U)` ensures that source_index is within loop bounds
+        # `source_index < int(U) - 1` ensures that there exists at least one sink index greater than the source index
+        return int(L) <= source_index < int(U) and source_index < int(U) - 1
     else:
         raise NotImplementedError
 

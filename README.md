@@ -11,7 +11,7 @@ pip install pydepcheck
 ## Usage Example
 
 ```python
-from pydepcheck.analyzer import analyze_loop_dependences
+from pydepcheck import analyze_loop_dependences
 
 code = """
 for i in range(10):
